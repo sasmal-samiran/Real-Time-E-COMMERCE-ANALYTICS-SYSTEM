@@ -1,6 +1,8 @@
 import random
 from datetime import datetime,timedelta
-
+from Generators.User_Generator import user_profiles
+from Generators.product_details import products,product_price
+# from User_Generator import user_profiles
 TRANSITIONS = {
     "home": {
         "search":0.30,
@@ -107,15 +109,10 @@ event_id_dict = {
     for i, v in enumerate(EVENT_TYPES.values(),start=1)
 }
 # products = [f"P{i}" for i in range(1000,1200)] PRODUCT_CATALOG
-products = {
-    "electronics": [f"E{i}" for i in range(1000,1030)],
-    "fashion": [f"F{i}" for i in range(2000,2030)],
-    "books": [f"B{i}" for i in range(3000,3030)],
-    "sports": [f"S{i}" for i in range(4000,4030)],
-    "home": [f"H{i}" for i in range(5000,5030)]
-}
+
 
 device_types = ["mobile", "desktop", "tablet"]
+weights_of_device_types = [0.65,0.3,0.05]
 browsers = { 
     "mobile": ["chrome_mobile", "Brave_mobile"], 
     "desktop": ["chrome", "firefox", "edge"], 
@@ -125,20 +122,20 @@ countries = ["India","Russia","Chin"]
 weights_of_countries = [0.7,0.2,0.1]
 traffic_sources = ["organic", "ads", "email", "social"]
 weights_of_traffic_sources = [0.6,0.15,0.05,0.2]
-price_ranges = { 
-    "electronics": (5000, 80000), 
-    "fashion": (300, 5000), 
-    "books": (150, 1200), 
-    "sports": (500, 15000), 
-    "home": (800, 25000) 
-}
-product_price = {}
-for category,product_list in products.items():
-    low, high = price_ranges[category]
-    for product_id in product_list:
-        price = random.randint(low,high)
-        price = int(round(price/100)) * 100 - 1
-        product_price[product_id] = price
+# price_ranges = { 
+#     "electronics": (5000, 80000), 
+#     "fashion": (300, 5000), 
+#     "books": (150, 1200), 
+#     "sports": (500, 15000), 
+#     "home": (800, 25000) 
+# }
+# product_price = {}
+# for category,product_list in products.items():
+#     low, high = price_ranges[category]
+#     for product_id in product_list:
+#         price = random.randint(low,high)
+#         price = int(round(price/100)) * 100 - 1
+#         product_price[product_id] = price
 def generate_page_url(page,product_id = None, category = None):
     if page == "product" and product_id:
         return f"/product/{product_id}"
@@ -174,7 +171,7 @@ def generate_sessions(user_id):
     session_events = []
     current_category = None
     cart_value = 0
-    device = random.choice(device_types)
+    device = random.choices(device_types,weights=weights_of_device_types,k=1)[0]
     browser = random.choice(browsers[device])
     country = random.choices(countries,weights=weights_of_countries,k=1)[0]
     traffic = random.choices(traffic_sources,weights=weights_of_traffic_sources,k=1)[0]
@@ -203,6 +200,7 @@ def generate_sessions(user_id):
 
         if current_page == "order_confirmation": 
             is_purchase = True
+            user_profiles[user_id]['total_orders'] += 1
         page_url = generate_page_url(current_page, product_id, current_category)
         event = {
             "timestamp":timestamp.isoformat(),

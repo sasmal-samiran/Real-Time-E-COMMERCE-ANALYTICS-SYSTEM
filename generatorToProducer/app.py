@@ -55,7 +55,7 @@ async def main():
     while True: 
         tasks = []  
         for _ in range(5): 
-            tasks.append(asyncio.create_task(simulate_user())) 
+            tasks.append(asyncio.create_task(simulate_user()))               
             await asyncio.gather(*tasks) 
             producer.flush() 
 asyncio.run(main())
