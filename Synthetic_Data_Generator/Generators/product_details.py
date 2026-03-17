@@ -40,7 +40,7 @@ def generate_discount(category: str) -> int:
     return random.randint(low, high)
 
 
-products_details = []
+products_details = {}
 for category in products.keys():
     for product_id in products[category]:
         data = {
@@ -52,4 +52,5 @@ for category in products.keys():
             'stock':random.randint(1000,10000),
             'discount':str(round(generate_discount(category),2))+'%'
         }
+        products_details[product_id] = data
 

@@ -1,7 +1,9 @@
 import random
 from datetime import datetime,timedelta
-from Generators.User_Generator import user_profiles
-from Generators.product_details import products,product_price
+# from Generators.User_Generator import user_profiles,generate_ip_for_country
+# from Generators.product_details import products,product_price
+from Synthetic_Data_Generator.Generators.User_Generator import user_profiles, generate_ip_for_country
+from Synthetic_Data_Generator.Generators.product_details import products, product_price
 # from User_Generator import user_profiles
 TRANSITIONS = {
     "home": {
@@ -118,24 +120,23 @@ browsers = {
     "desktop": ["chrome", "firefox", "edge"], 
     "tablet": ["chrome", "safari"] 
 }
-countries = ["India","Russia","Chin"]
+countries = ["India", "Russia", "China"]
 weights_of_countries = [0.7,0.2,0.1]
+
+locations = {
+    "India": [
+        "Mumbai", "Delhi", "Bangalore", "Chennai", "Kolkata",
+        "Hyderabad", "Pune", "Ahmedabad", "Jaipur", "Lucknow",
+        "Surat", "Kanpur", "Nagpur", "Visakhapatnam", "Indore",
+        "Thane", "Bhopal", "Patna", "Vadodara", "Coimbatore",
+        "Agra", "Madurai", "Nashik", "Varanasi", "Meerut",
+        "Rajkot", "Amritsar", "Aurangabad", "Jodhpur", "Ranchi",
+        "Guwahati", "Chandigarh", "Kochi", "Mysuru", "Srinagar"],
+    "Russia": ["Moscow", "Saint Petersburg", "Novosibirsk", "Yekaterinburg","Kazan", "Nizhny Novgorod", "Chelyabinsk", "Samara","Omsk", "Vladivostok"],
+    "China": ["Beijing", "Shanghai", "Guangzhou", "Shenzhen", "Chengdu"]
+}
 traffic_sources = ["organic", "ads", "email", "social"]
 weights_of_traffic_sources = [0.6,0.15,0.05,0.2]
-# price_ranges = { 
-#     "electronics": (5000, 80000), 
-#     "fashion": (300, 5000), 
-#     "books": (150, 1200), 
-#     "sports": (500, 15000), 
-#     "home": (800, 25000) 
-# }
-# product_price = {}
-# for category,product_list in products.items():
-#     low, high = price_ranges[category]
-#     for product_id in product_list:
-#         price = random.randint(low,high)
-#         price = int(round(price/100)) * 100 - 1
-#         product_price[product_id] = price
 def generate_page_url(page,product_id = None, category = None):
     if page == "product" and product_id:
         return f"/product/{product_id}"
@@ -144,14 +145,6 @@ def generate_page_url(page,product_id = None, category = None):
     if page == "search": 
         return "/search"
     return f"/{page}"
-# categories = [
-#     "electronics",
-#     "fashion",
-#     "home",
-#     "sports",
-#     "books",
-#     "beauty"
-# ]
 EXIT_PROBABILITY = 0.10
 MIN_STEPS = 6
 MAX_STEPS = 20
@@ -177,12 +170,39 @@ def generate_sessions(user_id):
     traffic = random.choices(traffic_sources,weights=weights_of_traffic_sources,k=1)[0]
     referrer = None
     steps = random.randint(MIN_STEPS,MAX_STEPS)
+    # ── Pick ONE IP for the entire session (before the loop) ──────
+    ip_data       = user_profiles[user_id]['IPs']
+    primary_ip    = ip_data['Primary_IP']
+    secondary_ips = ip_data['seconday_ips']     
+
+    PRIMARY_WEIGHT   = 0.85
+    RANDOM_TAIL      = 0.05
+    secondary_budget = 1.0 - PRIMARY_WEIGHT - RANDOM_TAIL  
+
+    pool    = [primary_ip]
+    weights = [PRIMARY_WEIGHT]
+
+    if secondary_ips:
+        per_secondary = secondary_budget / len(secondary_ips)
+        for ip in secondary_ips:
+            pool.append(ip)
+            weights.append(per_secondary)
+    else:
+        RANDOM_TAIL += secondary_budget   
+
+    pool.append("__random__")
+    weights.append(RANDOM_TAIL)
+
+    chosen_ip = random.choices(pool, weights=weights, k=1)[0]
+    if chosen_ip == "__random__":
+        session_ip = generate_ip_for_country(country)  
+    else:
+        session_ip = chosen_ip
     for _ in range(steps):
         product_id = None
         price = None
         quantity = None
         is_purchase = False
-        # current_category = random.choice(list(products.keys()))
         if current_page == "category":
             current_category = random.choice(list(products.keys()))
 
@@ -216,12 +236,14 @@ def generate_sessions(user_id):
             "device_type": device, 
             "browser": browser, 
             "country": country, 
+            "location":random.choice(locations[country]),
             "traffic_source": traffic,
             "page_url": page_url,
             "referrer_url": referrer,
             "time_on_page": random.uniform(5,60),
             "cart_value":cart_value if cart_value > 0 else None,
-            "is_purchase":is_purchase
+            "is_purchase":is_purchase,
+            "ip_address":session_ip
         }
         session_events.append(event)
         referrer = page_url
