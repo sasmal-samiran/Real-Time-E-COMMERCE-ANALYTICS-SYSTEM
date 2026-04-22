@@ -12,3 +12,5 @@ Synthetic_Data_Generator/
 
 # Extra
 *.docx
+consumer.py
+producer.py
