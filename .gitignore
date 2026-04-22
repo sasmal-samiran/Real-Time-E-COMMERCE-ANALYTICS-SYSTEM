@@ -9,3 +9,6 @@ venv311/
 # Project folders
 generatorToProducer/
 Synthetic_Data_Generator/
+
+# Extra
+*.docx
