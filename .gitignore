@@ -1,11 +1,11 @@
+# Python
 *.pyc
+__pycache__/
 
-consumer.py
-producer.py
+# Virtual env
+venv/
+venv311/
 
+# Project folders
 generatorToProducer/
 Synthetic_Data_Generator/
-venv311/
-generatorToProducer/*
-Synthetic_Data_Generator/*
-venv311/*
