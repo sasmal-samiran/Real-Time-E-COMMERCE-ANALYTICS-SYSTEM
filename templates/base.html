@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>📊 Dashboard</h2>
+        <a href="/">Overview</a>
+        <a href="/products">Products</a>
+        <a href="/funnel">Conversion</a>
+        <a href="/segmentation">Segmentation</a>
+        <a href="/anomaly">Anomaly</a>
+        <a href="/insights">Insights</a>
+    </div>
+
+    <div class="main">
+        <header>
+            <h1>E-Commerce Dashboard</h1>
+            <div id="datetime"></div>
+        </header>
+
+        <div class="main_area">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

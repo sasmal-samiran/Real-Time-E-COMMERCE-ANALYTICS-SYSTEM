@@ -1,0 +1,241 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background: #f4f6f8;
+    color: #111;
+}
+
+.sidebar {
+    position: fixed;
+    width: 220px;
+    height: 100%;
+    background: #8fa0ef;
+    padding: 20px;
+}
+
+.sidebar h2{
+    margin: 5px 50px 30px 5px;
+}
+
+.sidebar a {
+    display: block;
+    color: #031734;
+    padding: 10px;
+    text-decoration: none;
+    background-color: #b6d1fc;
+    margin: 10px;
+    border-radius: 10px;
+}
+.sidebar a:hover{
+    background-color: #d5e5fd;
+}
+
+.main {
+    margin-left: 240px;
+    padding: 20px 50px;
+}
+
+/* HEADER */
+header {
+    display: flex;
+    text-align: center;
+    justify-content: space-between;
+    backdrop-filter: blur(10px);
+}
+
+#datetime {
+    background-color: #64d7eb;
+    height: 20px;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+/* KPI CARDS */
+.kpi-container {
+    display: flex;
+    justify-content: space-around;
+    margin: 0px;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.card {
+    flex: 1;
+    margin: 10px;
+    min-width: 200px;
+    padding: 20px;
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    color: white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px) scale(1.03);
+}
+
+/* GRADIENT COLORS */
+.gradient-blue {
+    background: linear-gradient(45deg, #3b82f6, #06b6d4);
+}
+
+.gradient-green {
+    background: linear-gradient(45deg, #10b981, #22c55e);
+}
+
+.gradient-purple {
+    background: linear-gradient(45deg, #8b5cf6, #6366f1);
+}
+
+.gradient-orange {
+    background: linear-gradient(45deg, #f59e0b, #ef4444);
+}
+
+/* CHART SECTION */
+.charts {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.chart-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    width: 45%;
+    max-height: 300px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+.chart-box canvas {
+    flex: 1;
+}
+
+.chart-box h3 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* TABLE */
+.table-section {
+    margin: 20px;
+    text-align: center;
+}
+
+table {
+    width: 90%;
+    margin: auto;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th,
+td {
+    padding: 12px;
+}
+
+th {
+    background: #3b82f6;
+}
+
+tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* FOOTER */
+.footer {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-group button {
+    margin: 5px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(45deg, #3b82f6, #06b6d4);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-group button:hover {
+    transform: scale(1.1);
+}
+
+#segmentPieChart {
+    height: auto !important;
+}
+
+.recommendations-container {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.recommendations-container h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #111827;
+}
+
+.also-viewed-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+
+.also-viewed-list li {
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #374151;
+}
+
+.anomalies-section {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 30px;
+    background-color: #f9f9f9;
+}
+
+.anomalies-section h2 {
+    color: #e91e63;
+}
+
+.anomaly-block {
+    margin-bottom: 20px;
+}
+
+.anomaly-block h3 {
+    color: #3b82f6;
+    margin-bottom: 5px;
+}
+
+.anomaly-block ul {
+    list-style-type: circle;
+    padding-left: 20px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .chart-box {
+        width: 90%;
+    }
+}

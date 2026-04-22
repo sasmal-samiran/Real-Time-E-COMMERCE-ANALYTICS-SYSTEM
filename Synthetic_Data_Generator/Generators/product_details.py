@@ -26,7 +26,7 @@ for category,product_list in products.items():
     low, high = price_ranges[category]
     for product_id in product_list:
         price = random.randint(low,high)
-        price = int(round(price/100)) * 100 - 1
+        # price = int(round(price/100)) * 100 - 1
         product_price[product_id] = price
 DISCOUNT_RANGES = {
     "electronics": (5, 35),   

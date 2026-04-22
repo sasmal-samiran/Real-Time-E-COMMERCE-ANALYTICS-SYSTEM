@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Products</h2>
+<section class="charts">
+    <div class="chart-box">
+        <h3>Top Products By Purchase Rate</h3>
+        <canvas id="pieChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+        <h3>📉 Best forming Categories</h3>
+        <canvas id="categoryChart"></canvas>
+    </div>
+</section>
+<canvas id="categoryCompareChart" width="600" height="400"></canvas>
+{% endblock %}

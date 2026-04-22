@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Business Insights</h2>
+
+<ul id="insightList"></ul>
+<div class="recommendations-container">
+    <h3>Users who viewed this also viewed…</h3>
+
+    <ul id="alsoViewedList" class="also-viewed-list"></ul>
+
+    <canvas id="recommendationChart" width="400" height="200"></canvas>
+</div>
+
+{% endblock %}

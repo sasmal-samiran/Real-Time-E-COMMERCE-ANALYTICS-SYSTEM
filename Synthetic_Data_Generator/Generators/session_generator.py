@@ -31,28 +31,35 @@ TRANSITIONS = {
         "home":0.1
     },
     "product": {
-        "product":0.35,
-        "cart":0.15,
-        "wishlist":0.10,
-        "reviews":0.10,
-        "compare":0.10,
+        "product":0.20, # was 0.35,
+        "cart":0.35,
+        # "checkout": 0.15, # was 0.15,
+        "wishlist":0.08, # 0.10,
+        "reviews":0.08 , # 0.10,
+        "compare": 0.07, # 0.10,
         "search":0.10,
-        "category":0.05,
+        "category": 0.07, # 0.05,
         "home":0.05
     },
+    # "checkout": {
+    #     "payment":0.70,
+    #     "cart":0.15,
+    #     "address":0.10,
+    #     "login":0.05
+    # },
     "cart": {
-        "checkout":0.40,
-        "product":0.20,
-        "home":0.15,
-        "search":0.10,
-        "wishlist":0.10,
-        "coupon":0.05
+    "checkout": 0.80,   # was 0.40
+    "product": 0.05,    # 0.20
+    "home": 0.02,       # 0.15
+    "search": 0.03,     # 0.10
+    "wishlist": 0.05,   # 0.10
+    "coupon": 0.05      # 0.05
     },
     "checkout": {
-        "payment":0.70,
-        "cart":0.15,
-        "address":0.10,
-        "login":0.05
+    "payment": 0.85,    # was 0.70
+    "cart": 0.08,       # 0.15
+    "address": 0.05,    # 0.10
+    "login": 0.02       #0.05
     },
     "payment": {
         "order_confirmation":0.85,
@@ -145,9 +152,9 @@ def generate_page_url(page,product_id = None, category = None):
     if page == "search": 
         return "/search"
     return f"/{page}"
-EXIT_PROBABILITY = 0.10
-MIN_STEPS = 6
-MAX_STEPS = 20
+EXIT_PROBABILITY = 0.06     # 0.10
+MIN_STEPS = 10    # 6
+MAX_STEPS = 25    # 20
 
 def next_page(current_page='home'):
     possible_transactions = TRANSITIONS.get(current_page)
@@ -160,10 +167,14 @@ def next_page(current_page='home'):
 def generate_sessions(user_id):
     session_id = f"S{random.randint(100000,999999)}"
     current_page = "home"
-    timestamp = datetime.now()
+
+    date_string = "2026-04-08 8:30:00"
+
+    timestamp = datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
     session_events = []
     current_category = None
     cart_value = 0
+    cart_items = [] 
     device = random.choices(device_types,weights=weights_of_device_types,k=1)[0]
     browser = random.choice(browsers[device])
     country = random.choices(countries,weights=weights_of_countries,k=1)[0]
@@ -173,7 +184,7 @@ def generate_sessions(user_id):
     # ── Pick ONE IP for the entire session (before the loop) ──────
     ip_data       = user_profiles[user_id]['IPs']
     primary_ip    = ip_data['Primary_IP']
-    secondary_ips = ip_data['seconday_ips']     
+    secondary_ips = ip_data['secondary_ips']     
 
     PRIMARY_WEIGHT   = 0.85
     RANDOM_TAIL      = 0.05
@@ -198,6 +209,8 @@ def generate_sessions(user_id):
         session_ip = generate_ip_for_country(country)  
     else:
         session_ip = chosen_ip
+    
+    last_product_id = None 
     for _ in range(steps):
         product_id = None
         price = None
@@ -210,17 +223,31 @@ def generate_sessions(user_id):
             if current_category is None:
                 current_category = random.choice(list(products.keys()))
             product_id = random.choice(products[current_category])
+            last_product_id = product_id  
             price = product_price.get(product_id)
 
         '''-----------Cart Option----------'''
-        if current_page == "cart" and product_id:
-            quantity = random.randint(1,3)
-            price = product_price.get(product_id)
-            cart_value += price*quantity 
+        if current_page == "cart":  # and product_id:
+            product_id = last_product_id
+            if product_id:
+                quantity = random.randint(1,3)
+                price = product_price.get(product_id)
+                cart_value += price*quantity 
+                cart_items.append({"product_id": product_id, "qty": quantity, "price": price})
+
+        # if current_page == "checkout":
+        #     if cart_value == 0 and last_product_id:
+        #         product_id = last_product_id
+        #         price = product_price.get(product_id)
+        #         quantity = random.randint(1,3)
+        #         cart_value += price*quantity
+        #         cart_items.append({"product_id": product_id, "qty": quantity, "price": price})
 
         if current_page == "order_confirmation": 
+            product_id = last_product_id
             is_purchase = True
             user_profiles[user_id]['total_orders'] += 1
+
         page_url = generate_page_url(current_page, product_id, current_category)
         event = {
             "timestamp":timestamp.isoformat(),
@@ -231,8 +258,10 @@ def generate_sessions(user_id):
             "event_type":EVENT_TYPES.get(current_page,"page_view"),
             "product_id":product_id,
             "category":current_category,
-            "price":price,
-            "quantity":quantity,
+            "price": price,
+            "quantity":quantity if current_page == "cart" else (
+                    sum(i["qty"] for i in cart_items) if current_page == "order_confirmation" else None
+                    ),
             "device_type": device, 
             "browser": browser, 
             "country": country, 
@@ -241,7 +270,7 @@ def generate_sessions(user_id):
             "page_url": page_url,
             "referrer_url": referrer,
             "time_on_page": random.uniform(5,60),
-            "cart_value":cart_value if cart_value > 0 else None,
+            "cart_value":cart_value if current_page in ("cart", "checkout", "payment", "order_confirmation") and cart_value > 0 else None,
             "is_purchase":is_purchase,
             "ip_address":session_ip
         }

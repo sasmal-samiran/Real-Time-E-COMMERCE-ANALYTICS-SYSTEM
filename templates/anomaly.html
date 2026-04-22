@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Anomaly Detection</h2>
+
+<div class="anomalies-section">
+    <h2>Anomaly Detection 🚀</h2>
+    
+    <div class="anomaly-block">
+        <h3>Traffic Spikes</h3>
+        <ul id="trafficAnomaliesList"></ul>
+    </div>
+
+    <div class="anomaly-block">
+        <h3>Purchase Drops</h3>
+        <ul id="purchaseAnomaliesList"></ul>
+    </div>
+
+    <div class="anomaly-block">
+        <h3>Unusual Users</h3>
+        <ul id="unusualUsersList"></ul>
+    </div>
+
+    <canvas id="anomalyChart" height="200"></canvas>
+</div>
+
+{% endblock %}

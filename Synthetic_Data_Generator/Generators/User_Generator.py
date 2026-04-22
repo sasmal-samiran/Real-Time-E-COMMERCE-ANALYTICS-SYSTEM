@@ -65,7 +65,7 @@ def get_user():
             "total_orders":0,
             "IPs":{
                 "Primary_IP":generate_ip_for_country(country=country),
-                "seconday_ips":secondary_ips
+                "secondary_ips":secondary_ips
             }
         }
         return user_id

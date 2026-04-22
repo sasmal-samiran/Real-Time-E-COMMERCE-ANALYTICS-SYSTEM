@@ -1,0 +1,11 @@
+*.pyc
+
+consumer.py
+producer.py
+
+generatorToProducer/
+Synthetic_Data_Generator/
+venv311/
+generatorToProducer/*
+Synthetic_Data_Generator/*
+venv311/*

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="kpi-container">
+    <div class="card gradient-blue">👁 Views <span id="views"></span></div>
+    <div class="card gradient-green">🛒 Purchases <span id="purchases"></span></div>
+    <div class="card gradient-purple">💰 Revenue ₹<span id="revenue"></span></div>
+    <div class="card gradient-orange">📈 Purchase Rate <span id="purchase_rate"></span></div>
+</section>
+
+<section class="charts">
+    <div class="chart-box">
+        <h3>Purchases Over Time</h3>
+        <canvas id="timeChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+        <h3>Top Products (Views)</h3>
+        <canvas id="topChart"></canvas>
+    </div>
+</section>
+
+{% endblock %}
